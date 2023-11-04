@@ -34,7 +34,6 @@ export const Data = {
       "Teamwork",
       "Adaptability",
       "Conflict Resolution",
-      "Trabajo en equipo",
       "Emotional Intelligence",
       "Networking",
       "Negotiation",
