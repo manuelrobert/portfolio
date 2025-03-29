@@ -4,106 +4,142 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
 
+// Add WebGL detector function
+const isWebGLAvailable = () => {
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch (e) {
+    return false;
+  }
+};
+
 const Skills = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  const [webGLSupported, setWebGLSupported] = useState(true);
   
   // Three.js animation setup
   useEffect(() => {
-    if (!canvasRef.current) return;
-    
-    // Initialize Three.js scene
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
-      alpha: true,
-      antialias: true
-    });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    
-    // Create particles for background
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 500;
-    
-    const positionArray = new Float32Array(particlesCount * 3);
-    const colorArray = new Float32Array(particlesCount * 3);
-    
-    for (let i = 0; i < particlesCount * 3; i++) {
-      // Position
-      positionArray[i] = (Math.random() - 0.5) * 10;
-      
-      // Color
-      if (i % 3 === 0) {
-        // Red component (for primary color)
-        colorArray[i] = 0.5 + Math.random() * 0.2;
-      } else if (i % 3 === 1) {
-        // Green component (for secondary color)
-        colorArray[i] = 0.2 + Math.random() * 0.2;
-      } else {
-        // Blue component (for accent color)
-        colorArray[i] = 0.7 + Math.random() * 0.3;
-      }
+    // Check for WebGL support
+    if (!isWebGLAvailable()) {
+      setWebGLSupported(false);
+      return;
     }
     
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
-    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    if (!canvasRef.current) return;
     
-    // Material for particles
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.02,
-      sizeAttenuation: true,
-      vertexColors: true,
-      transparent: true,
-      alphaTest: 0.001,
-      opacity: 0.8
-    });
-    
-    // Create points
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particles);
-    
-    // Position camera
-    camera.position.z = 3;
-    
-    // Handle window resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+    try {
+      // Initialize Three.js scene
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      
+      // Create renderer with error handling
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas: canvasRef.current,
+          alpha: true,
+          antialias: true,
+          powerPreference: 'default',
+          failIfMajorPerformanceCaveat: false
+        });
+      } catch (error) {
+        console.error("Error creating WebGL renderer:", error);
+        setWebGLSupported(false);
+        return;
+      }
+      
       renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    // Animation loop
-    const clock = new THREE.Clock();
-    
-    const animate = () => {
-      const elapsedTime = clock.getElapsedTime();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       
-      // Rotate particles
-      particles.rotation.y = elapsedTime * 0.05;
-      particles.rotation.x = elapsedTime * 0.03;
+      // Create particles for background
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 500;
       
-      // Render
-      renderer.render(scene, camera);
+      const positionArray = new Float32Array(particlesCount * 3);
+      const colorArray = new Float32Array(particlesCount * 3);
       
-      // Call animate again on the next frame
-      window.requestAnimationFrame(animate);
-    };
-    
-    animate();
-    
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      scene.remove(particles);
-      particlesGeometry.dispose();
-      particlesMaterial.dispose();
-      renderer.dispose();
-    };
+      for (let i = 0; i < particlesCount * 3; i++) {
+        // Position
+        positionArray[i] = (Math.random() - 0.5) * 10;
+        
+        // Color
+        if (i % 3 === 0) {
+          // Red component (for primary color)
+          colorArray[i] = 0.5 + Math.random() * 0.2;
+        } else if (i % 3 === 1) {
+          // Green component (for secondary color)
+          colorArray[i] = 0.2 + Math.random() * 0.2;
+        } else {
+          // Blue component (for accent color)
+          colorArray[i] = 0.7 + Math.random() * 0.3;
+        }
+      }
+      
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
+      particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+      
+      // Material for particles
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.02,
+        sizeAttenuation: true,
+        vertexColors: true,
+        transparent: true,
+        alphaTest: 0.001,
+        opacity: 0.8
+      });
+      
+      // Create points
+      const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particles);
+      
+      // Position camera
+      camera.position.z = 3;
+      
+      // Handle window resize
+      const handleResize = () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      };
+      
+      window.addEventListener('resize', handleResize);
+      
+      // Animation loop
+      const clock = new THREE.Clock();
+      
+      const animate = () => {
+        const elapsedTime = clock.getElapsedTime();
+        
+        // Rotate particles
+        particles.rotation.y = elapsedTime * 0.05;
+        particles.rotation.x = elapsedTime * 0.03;
+        
+        // Render
+        renderer.render(scene, camera);
+        
+        // Call animate again on the next frame
+        window.requestAnimationFrame(animate);
+      };
+      
+      animate();
+      
+      // Cleanup
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        scene.remove(particles);
+        particlesGeometry.dispose();
+        particlesMaterial.dispose();
+        renderer.dispose();
+      };
+    } catch (error) {
+      console.error("Error in Three.js setup:", error);
+      setWebGLSupported(false);
+    }
   }, []);
 
   const skillCategories = [
@@ -225,13 +261,25 @@ const Skills = () => {
     }
   };
 
+  // Create a fallback background style for when WebGL is not supported
+  const fallbackBackgroundStyle = {
+    background: 'linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05) 0%, rgba(var(--color-secondary-rgb), 0.05) 100%)'
+  };
+
   return (
-    <section id="skills" className="section relative overflow-hidden py-24">
-      {/* Three.js Canvas Background */}
-      <canvas 
-        ref={canvasRef} 
-        className="absolute inset-0 w-full h-full -z-10"
-      />
+    <section id="skills" className="section relative overflow-hidden py-24" style={!webGLSupported ? fallbackBackgroundStyle : {}}>
+      {/* Three.js Canvas Background - Only render if WebGL is supported */}
+      {webGLSupported && (
+        <canvas 
+          ref={canvasRef} 
+          className="absolute inset-0 w-full h-full -z-10"
+        />
+      )}
+      
+      {/* Fallback background for non-WebGL browsers */}
+      {!webGLSupported && (
+        <div className="absolute inset-0 w-full h-full -z-10 bg-gradient-to-br from-primary/5 to-secondary/5" />
+      )}
       
       <div className="container-custom relative z-10">
         <motion.div 
