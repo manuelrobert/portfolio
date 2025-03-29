@@ -1,5 +1,11 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from 'next/dynamic';
+
+// Dynamically import ThreeAnimation with no SSR to avoid hydration issues
+const ThreeAnimation = dynamic(() => import('./ThreeAnimation'), { ssr: false });
 
 const Hero = () => {
   return (
@@ -7,14 +13,20 @@ const Hero = () => {
       id="about"
       className="section relative overflow-hidden bg-gradient-to-b from-gray-light to-background"
     >
-      {/* Background decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+      {/* Three.js animation background - positioned with higher z-index for visibility */}
+      <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+        <ThreeAnimation />
+      </div>
+      
+      {/* Fallback/supplementary background elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-[-2]">
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary/10 rounded-full filter blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-secondary/10 rounded-full filter blur-3xl"></div>
         <div className="absolute top-40 right-1/4 w-48 h-48 bg-accent/10 rounded-full filter blur-3xl"></div>
       </div>
 
-      <div className="container-custom">
+      {/* Main content with a higher z-index to appear above the animation */}
+      <div className="container-custom relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1 flex flex-col gap-6">
             <div>
