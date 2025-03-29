@@ -1,6 +1,111 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import { motion } from 'framer-motion';
 
 const Skills = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  
+  // Three.js animation setup
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    
+    // Initialize Three.js scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
+      alpha: true,
+      antialias: true
+    });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    // Create particles for background
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 500;
+    
+    const positionArray = new Float32Array(particlesCount * 3);
+    const colorArray = new Float32Array(particlesCount * 3);
+    
+    for (let i = 0; i < particlesCount * 3; i++) {
+      // Position
+      positionArray[i] = (Math.random() - 0.5) * 10;
+      
+      // Color
+      if (i % 3 === 0) {
+        // Red component (for primary color)
+        colorArray[i] = 0.5 + Math.random() * 0.2;
+      } else if (i % 3 === 1) {
+        // Green component (for secondary color)
+        colorArray[i] = 0.2 + Math.random() * 0.2;
+      } else {
+        // Blue component (for accent color)
+        colorArray[i] = 0.7 + Math.random() * 0.3;
+      }
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
+    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    
+    // Material for particles
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.02,
+      sizeAttenuation: true,
+      vertexColors: true,
+      transparent: true,
+      alphaTest: 0.001,
+      opacity: 0.8
+    });
+    
+    // Create points
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+    
+    // Position camera
+    camera.position.z = 3;
+    
+    // Handle window resize
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Animation loop
+    const clock = new THREE.Clock();
+    
+    const animate = () => {
+      const elapsedTime = clock.getElapsedTime();
+      
+      // Rotate particles
+      particles.rotation.y = elapsedTime * 0.05;
+      particles.rotation.x = elapsedTime * 0.03;
+      
+      // Render
+      renderer.render(scene, camera);
+      
+      // Call animate again on the next frame
+      window.requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      scene.remove(particles);
+      particlesGeometry.dispose();
+      particlesMaterial.dispose();
+      renderer.dispose();
+    };
+  }, []);
+
   const skillCategories = [
     {
       title: "Programming Languages",
@@ -57,70 +162,185 @@ const Skills = () => {
     }
   ];
 
+  // Animation variants for Framer Motion
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    }
+  };
+  
+  const tagVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }
+    }
+  };
+  
+  const skillItemVariants = {
+    initial: { 
+      x: 0, 
+      opacity: 1 
+    },
+    animate: { 
+      x: 0, 
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    },
+    hover: { 
+      x: 5, 
+      opacity: 1,
+      color: "var(--color-accent)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 10
+      } 
+    }
+  };
+
   return (
-    <section id="skills" className="section bg-gray-light relative">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
-        <div className="grid grid-cols-10 h-full">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div key={i} className="border-r border-b border-primary/5"></div>
-          ))}
-        </div>
-      </div>
+    <section id="skills" className="section relative overflow-hidden py-24">
+      {/* Three.js Canvas Background */}
+      <canvas 
+        ref={canvasRef} 
+        className="absolute inset-0 w-full h-full -z-10"
+      />
       
-      <div className="container-custom relative">
-        <div className="mb-16 text-center">
-          <span className="inline-block px-4 py-1.5 mb-4 bg-primary/10 rounded-full text-primary text-sm font-semibold">My Expertise</span>
+      <div className="container-custom relative z-10">
+        <motion.div 
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.span 
+            className="inline-block px-4 py-1.5 mb-4 bg-primary/10 rounded-full text-primary text-sm font-semibold backdrop-blur-sm"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            My Expertise
+          </motion.span>
           <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
             Technical Skills
           </h2>
           <p className="text-xl text-gray-dark max-w-3xl mx-auto">
             Diverse technical expertise spanning programming languages, frameworks, cloud platforms, and tools
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {skillCategories.map((category, index) => (
-            <div 
+            <motion.div 
               key={index} 
-              className="card card-hover group bg-opacity-60 backdrop-blur-sm hover:bg-opacity-80 hover:border-primary/30 transition-all duration-500"
+              variants={itemVariants}
+              className={`card backdrop-blur-lg bg-opacity-40 hover:bg-opacity-70 border border-gray/20 hover:border-primary/40 transition-all duration-500 overflow-hidden ${activeCategory === index ? 'border-primary/60 bg-opacity-60 transform -translate-y-1' : ''}`}
+              onMouseEnter={() => setActiveCategory(index)}
+              onMouseLeave={() => setActiveCategory(null)}
             >
               <div className="flex items-start gap-4">
-                <div className="text-3xl group-hover:scale-110 transition-transform">
-                  {category.icon}
+                <div className="text-3xl transition-all duration-300">
+                  <motion.div
+                    initial={{ rotate: 0 }}
+                    animate={{ rotate: activeCategory === index ? 360 : 0 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                  >
+                    {category.icon}
+                  </motion.div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-4 text-primary group-hover:text-gradient transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
                     {category.title}
                   </h3>
                   <ul className="space-y-3">
                     {category.skills.map((skill, idx) => (
-                      <li 
+                      <motion.li 
                         key={idx} 
-                        className="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-secondary group-hover:before:bg-accent before:transition-colors"
+                        initial="initial"
+                        animate={activeCategory === index ? "hover" : "initial"}
+                        variants={skillItemVariants}
+                        className="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-secondary transition-all duration-300"
+                        style={{
+                          paddingLeft: activeCategory === index ? '8px' : '20px',
+                          transform: activeCategory === index ? 'translateX(5px)' : 'translateX(0px)'
+                        }}
                       >
                         {skill}
-                      </li>
+                        {activeCategory === index && (
+                          <motion.div
+                            className="absolute left-0 top-2.5 h-1.5 w-1.5 rounded-full bg-accent"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        )}
+                      </motion.li>
                     ))}
                   </ul>
                 </div>
               </div>
-            </div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full transform -translate-y-1/2 translate-x-1/2 opacity-70 blur-lg"></div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         
-        <div className="flex justify-center mt-16">
-          <div className="inline-flex flex-wrap justify-center gap-3 p-3 rounded-xl bg-background/50 backdrop-blur-sm border border-gray/30">
-            <div className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm">Node.js</div>
-            <div className="px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm">TypeScript</div>
-            <div className="px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm">AWS</div>
-            <div className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm">Docker</div>
-            <div className="px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm">Kubernetes</div>
-            <div className="px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm">CI/CD</div>
-          </div>
-        </div>
+        <motion.div 
+          className="flex justify-center mt-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          <motion.div 
+            className="inline-flex flex-wrap justify-center gap-3 p-4 rounded-xl bg-background/30 backdrop-blur-lg border border-gray/20"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm hover:bg-primary/20 transition-colors cursor-pointer">Node.js</motion.div>
+            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm hover:bg-secondary/20 transition-colors cursor-pointer">TypeScript</motion.div>
+            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm hover:bg-accent/20 transition-colors cursor-pointer">AWS</motion.div>
+            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm hover:bg-primary/20 transition-colors cursor-pointer">Docker</motion.div>
+            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm hover:bg-secondary/20 transition-colors cursor-pointer">Kubernetes</motion.div>
+            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm hover:bg-accent/20 transition-colors cursor-pointer">CI/CD</motion.div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
