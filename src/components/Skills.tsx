@@ -317,7 +317,7 @@ const Skills = () => {
             <motion.div 
               key={index} 
               variants={itemVariants}
-              className={`card backdrop-blur-lg bg-opacity-40 hover:bg-opacity-70 border border-gray/20 hover:border-primary/40 transition-all duration-500 overflow-hidden ${activeCategory === index ? 'border-primary/60 bg-opacity-60 transform -translate-y-1' : ''}`}
+              className={`card card-animated backdrop-blur-lg bg-opacity-40 hover:bg-opacity-70 border border-gray/20 hover:border-primary/40 transition-all duration-500 overflow-hidden ${activeCategory === index ? 'border-primary/60 bg-opacity-60 transform -translate-y-1' : ''}`}
               onMouseEnter={() => setActiveCategory(index)}
               onMouseLeave={() => setActiveCategory(null)}
             >

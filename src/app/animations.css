@@ -94,6 +94,29 @@
   }
 }
 
+@keyframes border-gradient {
+  0% {
+    border-image-source: linear-gradient(to right, var(--primary), var(--secondary), var(--accent), var(--secondary), var(--primary));
+    border-image-slice: 1;
+  }
+  25% {
+    border-image-source: linear-gradient(to bottom, var(--primary), var(--secondary), var(--accent), var(--secondary), var(--primary));
+    border-image-slice: 1;
+  }
+  50% {
+    border-image-source: linear-gradient(to left, var(--primary), var(--secondary), var(--accent), var(--secondary), var(--primary));
+    border-image-slice: 1;
+  }
+  75% {
+    border-image-source: linear-gradient(to top, var(--primary), var(--secondary), var(--accent), var(--secondary), var(--primary));
+    border-image-slice: 1;
+  }
+  100% {
+    border-image-source: linear-gradient(to right, var(--primary), var(--secondary), var(--accent), var(--secondary), var(--primary));
+    border-image-slice: 1;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
 }
@@ -156,4 +179,33 @@
 
 .animate-slide-in-right {
   animation: slide-in-right 0.5s ease-out forwards;
+}
+
+.animate-border-gradient {
+  border-width: 1px;
+  border-style: solid;
+  animation: border-gradient 8s linear infinite;
+}
+
+/* Card edge glow effect */
+@keyframes card-edge-glow {
+  0% {
+    box-shadow: 0 0 5px 0 rgba(var(--primary-rgb), 0.3), 0 0 0 1px rgba(var(--primary-rgb), 0.1);
+  }
+  25% {
+    box-shadow: 0 0 8px 0 rgba(var(--secondary-rgb), 0.4), 0 0 0 1px rgba(var(--secondary-rgb), 0.1);
+  }
+  50% {
+    box-shadow: 0 0 12px 0 rgba(var(--accent-rgb), 0.3), 0 0 0 1px rgba(var(--accent-rgb), 0.1);
+  }
+  75% {
+    box-shadow: 0 0 8px 0 rgba(var(--secondary-rgb), 0.4), 0 0 0 1px rgba(var(--secondary-rgb), 0.1);
+  }
+  100% {
+    box-shadow: 0 0 5px 0 rgba(var(--primary-rgb), 0.3), 0 0 0 1px rgba(var(--primary-rgb), 0.1);
+  }
+}
+
+.animate-card-edge-glow {
+  animation: card-edge-glow 6s ease-in-out infinite;
 } 

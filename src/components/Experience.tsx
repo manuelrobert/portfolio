@@ -134,7 +134,7 @@ const Experience = () => {
                   <div className="text-primary font-semibold mb-4">{exp.company}</div>
                   <div className="md:hidden text-gray-dark text-sm mb-4">{exp.period}</div>
                   
-                  <div className="card card-hover">
+                  <div className="card card-hover card-animated">
                     <ul className="space-y-4">
                       {exp.responsibilities.map((resp, idx) => (
                         <li key={idx} className="relative pl-6 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-primary">

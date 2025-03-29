@@ -75,7 +75,7 @@ const Projects = () => {
             {projects.map((project, index) => (
               <div 
                 key={index} 
-                className={`card card-hover group relative h-full flex flex-col justify-between overflow-hidden ${
+                className={`card card-hover card-animated group relative h-full flex flex-col justify-between overflow-hidden ${
                   project.highlight ? 'border-primary/40 shadow-lg shadow-primary/10' : ''
                 }`}
               >
