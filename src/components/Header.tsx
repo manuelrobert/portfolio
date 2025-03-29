@@ -62,17 +62,19 @@ const Header = () => {
         </div>
         
         {/* Desktop Navigation */}
-        <nav className="hidden sm:flex items-center space-x-1">
-          {['About', 'Experience', 'Skills', 'Education', 'Projects'].map((item) => (
-            <a 
-              key={item} 
-              href={`#${item.toLowerCase()}`} 
-              className="px-4 py-2 rounded-full text-foreground hover:text-primary hover:bg-gray-light/50 transition-all focus-ring"
-            >
-              {item}
-            </a>
-          ))}
-        </nav>
+        <div className="hidden sm:flex items-center space-x-1">
+          <nav className="flex items-center space-x-1">
+            {['About', 'Experience', 'Skills', 'Education', 'Projects'].map((item) => (
+              <a 
+                key={item} 
+                href={`#${item.toLowerCase()}`} 
+                className="px-4 py-2 rounded-full text-foreground hover:text-primary hover:bg-gray-light/50 transition-all focus-ring"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+        </div>
       </div>
     </header>
   );
