@@ -41,15 +41,6 @@ const Hero = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </a>
-              <a 
-                href="https://libinmathew.vercel.app" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline focus-ring"
-                aria-label="Visit Libin's portfolio"
-              >
-                View Portfolio
-              </a>
             </div>
             
             <div className="flex flex-wrap gap-6 mt-4 animate-fade-in-delay-4">
@@ -84,16 +75,6 @@ const Hero = () => {
               >
                 <Image src="/icons/linkedin.svg" alt="LinkedIn" width={18} height={18} />
                 <span className="text-sm">linkedin.com/in/libinmath3w</span>
-              </a>
-              <a 
-                href="https://libinmathew.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-primary transition-colors bg-gray-light/60 p-2.5 px-3 rounded-full border border-gray/40 backdrop-blur-sm focus-ring"
-                aria-label="Visit Libin's portfolio website"
-              >
-                <Image src="/icons/globe.svg" alt="Portfolio" width={18} height={18} />
-                <span className="text-sm">libinmathew.vercel.app</span>
               </a>
             </div>
           </div>
