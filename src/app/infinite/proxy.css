@@ -76,6 +76,16 @@ iframe {
   height: 100%;
   border: none;
   transition: transform 0.3s ease;
+  background-color: #fff; /* Provide a white background for content */
+}
+
+/* Video-optimized styles */
+.video-optimized {
+  background-color: #000 !important;
+}
+
+.video-optimized iframe {
+  background-color: #000;
 }
 
 /* Loading animation */
@@ -92,7 +102,7 @@ iframe {
   to { transform: rotate(360deg); }
 }
 
-/* Glow effect for buttons */
+/* Enhanced glow effect for buttons */
 .glow-button {
   position: relative;
   overflow: hidden;
@@ -146,6 +156,11 @@ iframe {
   background-color: #ffffff;
 }
 
+/* Video fullscreen mode */
+.video-fullscreen {
+  background-color: #000 !important;
+}
+
 /* Floating controls */
 .floating-controls {
   position: fixed;
@@ -173,6 +188,47 @@ iframe {
 .floating-controls button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* YouTube-specific optimizations */
+.youtube-embed-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.youtube-embed-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Error message styling */
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+}
+
+.error-message h3 {
+  color: #e53e3e;
+  margin-bottom: 1rem;
+}
+
+.error-message p {
+  max-width: 600px;
+  margin-bottom: 1rem;
 }
 
 /* Responsive adjustments */

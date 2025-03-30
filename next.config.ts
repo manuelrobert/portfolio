@@ -54,6 +54,19 @@ const nextConfig: NextConfig = {
     },
     responseLimit: '10mb',
   },
+  // Add CORS and rewrites for specific embedded content
+  async rewrites() {
+    return [
+      {
+        source: '/embed/youtube/:id',
+        destination: 'https://www.youtube.com/embed/:id'
+      },
+      {
+        source: '/embed/vimeo/:id',
+        destination: 'https://player.vimeo.com/video/:id'
+      }
+    ];
+  },
 };
 
 export default nextConfig;

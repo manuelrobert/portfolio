@@ -7,6 +7,27 @@ import Footer from "../../components/Footer";
 import ScrollToTop from "../../components/ScrollToTop";
 import "./proxy.css";
 
+// Helper function to detect common video and streaming services
+const isVideoSite = (url: string): boolean => {
+  const videoSites = [
+    'youtube.com', 'youtu.be', 'vimeo.com', 'dailymotion.com', 
+    'twitch.tv', 'netflix.com', 'hulu.com', 'disneyplus.com',
+    'hbomax.com', 'amazon.com/video', 'primevideo.com'
+  ];
+  return videoSites.some(site => url.toLowerCase().includes(site));
+};
+
+// Helper to determine if site might have embedding restrictions
+const mightHaveRestrictions = (url: string): boolean => {
+  const restrictedSites = [
+    'youtube.com', 'youtu.be', 'facebook.com', 'twitter.com', 
+    'instagram.com', 'tiktok.com', 'linkedin.com', 'reddit.com',
+    'netflix.com', 'hulu.com', 'disneyplus.com', 'spotify.com',
+    'discord.com', 'teams.microsoft.com', 'zoom.us'
+  ];
+  return restrictedSites.some(site => url.toLowerCase().includes(site));
+};
+
 export default function InfinitePage() {
   const [url, setUrl] = useState("");
   const [currentUrl, setCurrentUrl] = useState("");
@@ -15,6 +36,7 @@ export default function InfinitePage() {
   const [adBlockDetected, setAdBlockDetected] = useState(false);
   const [useApiProxy, setUseApiProxy] = useState(true); // Set to true by default for better compatibility
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isVideoService, setIsVideoService] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const adNoticeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -73,6 +95,15 @@ export default function InfinitePage() {
       formattedUrl = `https://${url}`;
     }
 
+    // Check if it's a video service
+    const isVideo = isVideoSite(formattedUrl);
+    setIsVideoService(isVideo);
+
+    // If it's a site that might have restrictions, forcibly use API proxy
+    if (mightHaveRestrictions(formattedUrl)) {
+      setUseApiProxy(true);
+    }
+
     setIsLoading(true);
     setError("");
     
@@ -82,10 +113,40 @@ export default function InfinitePage() {
     }
     
     setCurrentUrl(formattedUrl);
+
+    // Auto switch to fullscreen for videos
+    if (isVideo && !isFullscreen) {
+      setIsFullscreen(true);
+    }
   };
 
   const handleIframeLoad = () => {
     setIsLoading(false);
+    
+    // Check if iframe content is properly loaded
+    try {
+      // This will throw an error if cross-origin blocking prevents access
+      if (iframeRef.current && iframeRef.current.contentWindow) {
+        // Try to get the title - this will throw an error if blocked
+        const dummy = iframeRef.current.contentWindow.document.title;
+      }
+    } catch (error) {
+      // Only show broken iframe warning if not using API proxy
+      if (!useApiProxy && !currentUrl.startsWith('/api/infinite')) {
+        console.log("Cross-origin blocking detected");
+        // Don't set error immediately to avoid error flash
+        if (iframeRef.current) {
+          // Check if the iframe actually loaded content first
+          setTimeout(() => {
+            if (iframeRef.current && 
+                (!iframeRef.current.contentDocument || 
+                 iframeRef.current.contentDocument.body.innerHTML === '')) {
+              handleIframeError();
+            }
+          }, 1000);
+        }
+      }
+    }
   };
 
   const handleIframeError = () => {
@@ -130,6 +191,74 @@ export default function InfinitePage() {
     setIsFullscreen(!isFullscreen);
   };
 
+  const renderOptimizedControls = () => {
+    if (isVideoService) {
+      // Simplified controls for video services
+      return (
+        <div className="flex items-center justify-end mb-3">
+          <button 
+            onClick={toggleFullscreen}
+            className="px-3 py-1.5 rounded-md bg-background/80 backdrop-blur-sm border border-gray/30 hover:bg-gray-light/30 transition-colors text-sm flex items-center gap-1"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {isFullscreen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9L4 4m0 0l5 0M4 4v5m11-5h5m0 0v5m0-5l-5 5M9 20l-5-5m0 0v5m0-5h5m11 5l-5-5m0 0h5m0 0v5" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              )}
+            </svg>
+            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+          </button>
+        </div>
+      );
+    }
+
+    // Regular controls for non-video sites
+    return (
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+        {/* Proxy mode switch */}
+        <div className="flex items-center">
+          <label className="flex items-center cursor-pointer">
+            <span className="mr-2 text-sm text-gray-dark">Use API Infinite</span>
+            <div className="relative">
+              <input 
+                type="checkbox" 
+                className="sr-only" 
+                checked={useApiProxy}
+                onChange={toggleProxyMode}
+              />
+              <div className={`block w-10 h-6 rounded-full transition-colors duration-300 ${useApiProxy ? 'bg-primary' : 'bg-gray-light'}`}></div>
+              <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${useApiProxy ? 'transform translate-x-4' : ''}`}></div>
+            </div>
+          </label>
+        </div>
+
+        {currentUrl && (
+          <div className="url-display truncate flex-grow max-w-[60%] mx-2">
+            {currentUrl.startsWith('/api/infinite?url=') 
+              ? `${decodeURIComponent(currentUrl.replace('/api/infinite?url=', ''))} (via API infinite)`
+              : currentUrl}
+          </div>
+        )}
+
+        {/* Fullscreen button */}
+        <button 
+          onClick={toggleFullscreen}
+          className="px-3 py-1.5 rounded-md bg-background border border-gray/30 hover:bg-gray-light/30 transition-colors text-sm flex items-center gap-1"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {isFullscreen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9L4 4m0 0l5 0M4 4v5m11-5h5m0 0v5m0-5l-5 5M9 20l-5-5m0 0v5m0-5h5m11 5l-5-5m0 0h5m0 0v5" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            )}
+          </svg>
+          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+        </button>
+      </div>
+    );
+  };
+
   return (
     <main className="min-h-screen flex flex-col">
       <Header />
@@ -154,7 +283,7 @@ export default function InfinitePage() {
                     type="text"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
-                    placeholder="Enter website URL (e.g., google.com)"
+                    placeholder="Enter website URL (e.g., google.com, youtube.com/watch?v=...)"
                     className="w-full pl-10 pr-4 py-3 rounded-lg bg-background border border-gray/30 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 outline-none text-foreground"
                   />
                 </div>
@@ -168,47 +297,7 @@ export default function InfinitePage() {
               </form>
 
               {/* Controls row */}
-              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                {/* Proxy mode switch */}
-                <div className="flex items-center">
-                  <label className="flex items-center cursor-pointer">
-                    <span className="mr-2 text-sm text-gray-dark">Use API Infinite</span>
-                    <div className="relative">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only" 
-                        checked={useApiProxy}
-                        onChange={toggleProxyMode}
-                      />
-                      <div className={`block w-10 h-6 rounded-full transition-colors duration-300 ${useApiProxy ? 'bg-primary' : 'bg-gray-light'}`}></div>
-                      <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${useApiProxy ? 'transform translate-x-4' : ''}`}></div>
-                    </div>
-                  </label>
-                </div>
-
-                {currentUrl && (
-                  <div className="url-display truncate flex-grow max-w-[60%] mx-2">
-                    {currentUrl.startsWith('/api/infinite?url=') 
-                      ? `${decodeURIComponent(currentUrl.replace('/api/infinite?url=', ''))} (via API infinite)`
-                      : currentUrl}
-                  </div>
-                )}
-
-                {/* Fullscreen button */}
-                <button 
-                  onClick={toggleFullscreen}
-                  className="px-3 py-1.5 rounded-md bg-background border border-gray/30 hover:bg-gray-light/30 transition-colors text-sm flex items-center gap-1"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    {isFullscreen ? (
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9L4 4m0 0l5 0M4 4v5m11-5h5m0 0v5m0-5l-5 5M9 20l-5-5m0 0v5m0-5h5m11 5l-5-5m0 0h5m0 0v5" />
-                    ) : (
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                    )}
-                  </svg>
-                  {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-                </button>
-              </div>
+              {renderOptimizedControls()}
 
               {error && (
                 <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 border border-red-200">
@@ -217,7 +306,7 @@ export default function InfinitePage() {
               )}
             </div>
 
-            <div className={`iframe-container w-full relative ${isFullscreen ? 'h-screen' : 'h-[70vh] md:h-[75vh]'}`}>
+            <div className={`iframe-container w-full relative ${isFullscreen ? 'h-screen' : isVideoService ? 'h-[75vh] md:h-[80vh]' : 'h-[70vh] md:h-[75vh]'}`}>
               {/* Ad Blocker Notice */}
               <div ref={adNoticeRef} className="ad-blocker-notice">
                 <p>Ad blocker detected. Some websites may not function correctly. Consider disabling it for this page.</p>
@@ -234,7 +323,9 @@ export default function InfinitePage() {
                   ref={iframeRef}
                   src={currentUrl}
                   className="w-full h-full border-0"
-                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen={true}
                   onLoad={handleIframeLoad}
                   onError={handleIframeError}
                 />
@@ -276,8 +367,8 @@ export default function InfinitePage() {
               <ul className="list-disc list-inside text-gray-dark space-y-1">
                 <li>Some websites might block access through direct embedding</li>
                 <li>API Infinite mode is enabled by default for better compatibility</li>
+                <li>For YouTube videos, just enter the video URL and it will work automatically</li>
                 <li>Use fullscreen mode for the best browsing experience</li>
-                <li>Your browsing is not anonymized - this is a simple iframe Infinite</li>
                 {adBlockDetected && (
                   <li className="text-amber-600">Ad blockers may interfere with some website functionality</li>
                 )}
