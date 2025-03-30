@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import ResumeModal from "./ResumeModal";
+import Link from "next/link";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -88,6 +89,14 @@ const Footer = () => {
                     >
                       Projects
                     </a>
+                  </li>
+                  <li>
+                    <Link
+                      href="/infinite"
+                      className="hover:text-primary transition-colors focus-ring"
+                    >
+                      Infinite
+                    </Link>
                   </li>
                 </ul>
               </div>
