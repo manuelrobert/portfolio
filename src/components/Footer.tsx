@@ -202,7 +202,7 @@ const Footer = () => {
               Built with ❤️ by Next.js and Tailwind CSS
             </p>
             <p className="mt-2 text-xs opacity-70">
-              Version 1.0.0 Build 20250329
+              Version 1.0.1 Build 20250331
             </p>
           </div>
         </div>

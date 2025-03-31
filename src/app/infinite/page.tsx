@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ScrollToTop from "../../components/ScrollToTop";
 import "./proxy.css";
+import { Analytics } from '@vercel/analytics/react';
 
 // Helper function to detect common video and streaming services
 const isVideoSite = (url: string): boolean => {
@@ -271,8 +272,20 @@ export default function InfinitePage() {
           <div className={`max-w-5xl mx-auto w-full mb-6 text-center transition-opacity ${isFullscreen ? 'opacity-0 absolute -z-50' : 'opacity-100'}`}>
             <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gradient-pink">Infinite</h1>
             <p className="text-lg text-gray-dark max-w-2xl mx-auto">
-              Browse websites infinitely within this page.
+              Browse websites seamlessly within this page.
             </p>
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={() => router.push('/infinite/list')}
+                className="px-6 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-indigo-500/20 hover:scale-105 animate-pulse-slow"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                YouTube Playlist Player
+              </button>
+            </div>
           </div>
 
           <div className={`proxy-container w-full mx-auto p-4 ${isFullscreen ? 'fullscreen-container' : 'max-w-5xl'}`}>
@@ -369,6 +382,7 @@ export default function InfinitePage() {
                 <li>API Infinite mode is enabled by default for better compatibility</li>
                 <li>For YouTube videos, just enter the video URL and it will work automatically</li>
                 <li>Use fullscreen mode for the best browsing experience</li>
+                <li>Try our <span className="text-primary cursor-pointer hover:underline" onClick={() => router.push('/infinite/list')}>YouTube Playlist Player</span> for ad-free playlist playback</li>
                 {adBlockDetected && (
                   <li className="text-amber-600">Ad blockers may interfere with some website functionality</li>
                 )}
@@ -417,7 +431,23 @@ export default function InfinitePage() {
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
           transition: all 0.3s ease;
         }
+
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.9;
+            transform: scale(1.03);
+          }
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 3s ease-in-out infinite;
+        }
       `}</style>
+      <Analytics />
     </main>
   );
 } 
