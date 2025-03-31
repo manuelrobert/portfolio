@@ -215,18 +215,18 @@ export default function PlaylistPage() {
             <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gradient-pink">
               YouTube Playlist Player
             </h1>
-            <p className="text-lg text-gray-dark max-w-2xl mx-auto">
+            <p className="text-lg text-foreground max-w-2xl mx-auto">
               Play YouTube playlists without ads or interruptions.
             </p>
             <div className="mt-4">
               <button
                 onClick={() => router.push('/infinite')}
-                className="px-4 py-2 rounded-md bg-white shadow-md border border-gray-300 hover:bg-gray-50 transition-all duration-200 text-sm inline-flex items-center gap-2 hover:scale-105 hover:shadow-lg"
+                className="px-4 py-2 rounded-md bg-indigo-600 text-white shadow-md border border-indigo-700 hover:bg-indigo-700 transition-all duration-200 text-sm inline-flex items-center gap-2 hover:scale-105 hover:shadow-lg"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                <span className="font-medium text-gray-800">Back to Infinite</span>
+                <span className="font-medium">Back to Infinite</span>
               </button>
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function PlaylistPage() {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-dark"
+                      className="h-5 w-5 text-foreground/60"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -261,7 +261,7 @@ export default function PlaylistPage() {
                     value={playlistUrl}
                     onChange={(e) => setPlaylistUrl(e.target.value)}
                     placeholder="Enter YouTube playlist URL (e.g., youtube.com/playlist?list=PL...)"
-                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-background border border-gray/30 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 outline-none text-foreground"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-background border border-foreground/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200 outline-none text-foreground placeholder:text-foreground/50"
                   />
                 </div>
                 <button
@@ -280,11 +280,11 @@ export default function PlaylistPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={toggleQRCode}
-                        className="px-3 py-1.5 rounded-md bg-white shadow-md border border-gray/30 hover:bg-gray-light/50 transition-all duration-200 text-sm flex items-center gap-1 hover:scale-105"
+                        className="px-3 py-1.5 rounded-md bg-indigo-600 shadow-md border border-indigo-700 hover:bg-indigo-500 transition-all duration-200 text-sm flex items-center gap-1 hover:scale-105 text-white"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 text-indigo-600"
+                          className="h-4 w-4 text-white"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -301,7 +301,7 @@ export default function PlaylistPage() {
 
                       <div className="flex items-center">
                         <label className="flex items-center cursor-pointer">
-                          <span className="mr-2 text-sm font-medium text-gray-800">
+                          <span className="mr-2 text-sm font-medium text-foreground">
                             Ad Blocker
                           </span>
                           <div className="relative">
@@ -316,7 +316,7 @@ export default function PlaylistPage() {
                             />
                             <div
                               className={`block w-10 h-6 rounded-full transition-colors duration-300 shadow-inner ${
-                                useAdBlocker ? "bg-indigo-600" : "bg-gray-300"
+                                useAdBlocker ? "bg-indigo-600" : "bg-gray-500"
                               }`}
                             ></div>
                             <div
@@ -365,12 +365,12 @@ export default function PlaylistPage() {
               {/* QR Code Modal */}
               {showQRCode && playlistId && (
                 <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
-                  <div className="bg-white rounded-xl p-5 max-w-sm w-full mx-4 shadow-2xl">
+                  <div className="dark:bg-gray-800 bg-white rounded-xl p-5 max-w-sm w-full mx-4 shadow-2xl border border-indigo-500/20">
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-semibold">Share Playlist</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Share Playlist</h3>
                       <button
                         onClick={toggleQRCode}
-                        className="p-1 rounded-full hover:bg-gray-light/50"
+                        className="p-1 rounded-full hover:bg-gray-light/50 dark:hover:bg-gray-700/50 text-foreground"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -392,9 +392,9 @@ export default function PlaylistPage() {
                       <img
                         src={getQRCodeUrl()}
                         alt="QR Code for playlist"
-                        className="w-48 h-48 object-contain mb-4 border p-2 rounded-lg"
+                        className="w-48 h-48 object-contain mb-4 border p-2 rounded-lg bg-white"
                       />
-                      <p className="text-sm text-gray-dark text-center mb-4">
+                      <p className="text-sm text-foreground/80 text-center mb-4">
                         Scan this QR code to open this playlist on another
                         device
                       </p>
@@ -405,13 +405,13 @@ export default function PlaylistPage() {
                             navigator.clipboard.writeText(shareUrl);
                             alert("Link copied to clipboard!");
                           }}
-                          className="px-3 py-1.5 rounded-md bg-primary text-white text-sm hover:bg-primary/90 transition-colors"
+                          className="px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm hover:bg-indigo-500 transition-colors"
                         >
                           Copy Link
                         </button>
                         <button
                           onClick={toggleQRCode}
-                          className="px-3 py-1.5 rounded-md border border-gray text-sm hover:bg-gray-light/30 transition-colors"
+                          className="px-3 py-1.5 rounded-md border border-foreground/20 text-sm hover:bg-foreground/10 transition-colors text-foreground"
                         >
                           Close
                         </button>
@@ -457,7 +457,7 @@ export default function PlaylistPage() {
                   onLoad={handleIframeLoad}
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center h-full text-gray-dark">
+                <div className="flex flex-col items-center justify-center h-full text-foreground/80">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-16 w-16 mb-4 text-red-500/70"
@@ -481,7 +481,7 @@ export default function PlaylistPage() {
                   <p className="text-lg">
                     Enter a YouTube playlist URL above to start watching
                   </p>
-                  <p className="mt-2 text-sm text-gray-dark max-w-md text-center">
+                  <p className="mt-2 text-sm text-foreground/80 max-w-md text-center">
                     Find a playlist on YouTube, copy the URL from the address
                     bar, and paste it here.
                     <br />
@@ -536,14 +536,14 @@ export default function PlaylistPage() {
                 isFullscreen ? "opacity-0 h-0 overflow-hidden" : "opacity-100"
               }`}
             >
-              <h3 className="font-semibold text-lg mb-2">
+              <h3 className="font-semibold text-lg mb-2 text-foreground">
                 About YouTube Playlist Player
               </h3>
-              <p className="text-gray-dark mb-3">
+              <p className="text-foreground/80 mb-3">
                 Enjoy YouTube playlists without interruptions. Here's what makes
                 this player special:
               </p>
-              <ul className="list-disc list-inside text-gray-dark space-y-1">
+              <ul className="list-disc list-inside text-foreground/80 space-y-1">
                 <li>No ads or interruptions during playback</li>
                 <li>Continuous playback of entire playlists</li>
                 <li>Clean, distraction-free interface</li>

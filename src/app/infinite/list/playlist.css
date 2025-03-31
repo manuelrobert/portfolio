@@ -1,10 +1,11 @@
 /* YouTube Playlist Player Styles */
 
 .playlist-container {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .url-input {
@@ -16,7 +17,6 @@
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--color-gray-dark);
 }
 
 .glow-button {
@@ -61,6 +61,14 @@
   margin-bottom: 16px;
   text-align: center;
   border: 1px solid rgba(133, 100, 4, 0.2);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .playlist-container {
+    background-color: rgba(30, 30, 60, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
 }
 
 @media (max-width: 768px) {
