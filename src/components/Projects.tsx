@@ -89,7 +89,7 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
         
         {/* Title */}
         <motion.h3 
-          className="text-xl font-bold mb-2 text-gradient inline-block"
+          className="text-xl font-bold mb-2 text-gradient inline-block tracking-tight"
           animate={controls}
           variants={{
             initial: { x: 0 },
@@ -101,7 +101,9 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
         </motion.h3>
         
         {/* Description */}
-        <p className="text-gray-dark text-sm mb-4 flex-grow">{project.description}</p>
+        <p className="text-gray-dark text-sm mb-4 flex-grow font-light leading-relaxed">
+          {project.description}
+        </p>
         
         {/* Skills */}
         <div className="flex flex-wrap gap-2 mt-auto">
@@ -260,7 +262,7 @@ const Projects = () => {
             </h2>
           </motion.div>
           <motion.p 
-            className="text-xl text-gray-dark max-w-3xl mx-auto"
+            className="text-xl text-gray-dark max-w-3xl mx-auto font-light"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
@@ -299,7 +301,7 @@ const Projects = () => {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
             onClick={() => setIsResumeModalOpen(true)}
           >
-            View Full Resume
+            <span className="tracking-tight">View Full Resume</span>
           </motion.button>
         </motion.div>
       </div>

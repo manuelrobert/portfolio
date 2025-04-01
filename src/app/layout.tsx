@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Poppins, Montserrat, Source_Code_Pro } from "next/font/google";
+import { Inter, Raleway, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   display: "swap",
-  variable: "--font-poppins",
+  variable: "--font-inter",
 });
 
-const montserrat = Montserrat({
+const raleway = Raleway({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   display: "swap",
-  variable: "--font-montserrat",
+  variable: "--font-raleway",
 });
 
 const sourceCodePro = Source_Code_Pro({
@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${montserrat.variable} ${sourceCodePro.variable} antialiased`}
+        className={`${inter.variable} ${raleway.variable} ${sourceCodePro.variable} antialiased`}
       >
         {children}
       </body>

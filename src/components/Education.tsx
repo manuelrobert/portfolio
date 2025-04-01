@@ -148,7 +148,7 @@ const Education = () => {
             </h2>
           </motion.div>
           <motion.p 
-            className="text-xl text-gray-dark max-w-3xl mx-auto"
+            className="text-xl text-gray-dark max-w-3xl mx-auto font-light"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
@@ -162,7 +162,7 @@ const Education = () => {
           {/* Education Section */}
           <div className="relative">
             <motion.h3 
-              className="heading-md mb-8 text-primary/90 font-semibold"
+              className="heading-md mb-8 text-primary/90 font-semibold tracking-tight"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
@@ -215,14 +215,14 @@ const Education = () => {
                   
                   <Card>
                     <motion.h4 
-                      className="text-xl font-bold mb-2 text-gradient inline-block"
+                      className="text-xl font-bold mb-2 text-gradient inline-block tracking-tight"
                       whileHover={{ x: 2 }}
                       transition={{ duration: 0.2 }}
                     >
                       {edu.degree}
                     </motion.h4>
-                    <p className="text-primary font-semibold mb-2">{edu.institution}</p>
-                    <p className="text-sm text-gray-dark mt-1">{edu.period}</p>
+                    <p className="text-primary font-medium mb-2">{edu.institution}</p>
+                    <p className="text-sm text-gray-dark mt-1 font-light">{edu.period}</p>
                   </Card>
                 </motion.div>
               ))}
@@ -232,7 +232,7 @@ const Education = () => {
           {/* Skills Section */}
           <div className="relative">
             <motion.h3 
-              className="heading-md mb-8 text-primary/90 font-semibold"
+              className="heading-md mb-8 text-primary/90 font-semibold tracking-tight"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
@@ -255,7 +255,7 @@ const Education = () => {
                 >
                   <Card>
                     <motion.h4 
-                      className="text-lg font-semibold mb-3 text-gradient inline-block"
+                      className="text-lg font-semibold mb-3 text-gradient inline-block tracking-tight"
                       whileHover={{ x: 2 }}
                       transition={{ duration: 0.2 }}
                     >

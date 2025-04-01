@@ -234,7 +234,7 @@ const Skills = () => {
             </h2>
           </motion.div>
           <motion.p 
-            className="text-xl text-gray-dark max-w-3xl mx-auto"
+            className="text-xl text-gray-dark max-w-3xl mx-auto font-light"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
@@ -282,7 +282,7 @@ const Skills = () => {
                     <span className="text-xl text-gradient">{category.icon}</span>
                   </motion.div>
                   <motion.h3 
-                    className="text-xl font-bold text-gradient inline-block"
+                    className="text-xl font-bold text-gradient inline-block tracking-tight"
                     whileHover={{ x: 2 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -300,7 +300,7 @@ const Skills = () => {
                       transition={{ duration: 0.2 }}
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
-                      <span className="text-gray-dark">{skill}</span>
+                      <span className="text-gray-dark font-light">{skill}</span>
                     </motion.div>
                   ))}
                 </div>
