@@ -4,14 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
 
-// Add WebGL detector function
+// Simplified WebGL detector
 const isWebGLAvailable = () => {
   try {
     const canvas = document.createElement('canvas');
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-    );
+    return !!(window.WebGLRenderingContext && 
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
   } catch (e) {
     return false;
   }
@@ -22,183 +20,145 @@ const Skills = () => {
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
   const [webGLSupported, setWebGLSupported] = useState(true);
   
-  // Three.js animation setup
+  // Optimized Three.js setup
   useEffect(() => {
-    // Check for WebGL support
-    if (!isWebGLAvailable()) {
+    if (!isWebGLAvailable() || !canvasRef.current) {
       setWebGLSupported(false);
       return;
     }
     
-    if (!canvasRef.current) return;
+    // Initialize scene elements
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    let renderer: THREE.WebGLRenderer;
     
     try {
-      // Initialize Three.js scene
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      
-      // Create renderer with error handling
-      let renderer;
-      try {
-        renderer = new THREE.WebGLRenderer({
-          canvas: canvasRef.current,
-          alpha: true,
-          antialias: true,
-          powerPreference: 'default',
-          failIfMajorPerformanceCaveat: false
-        });
-      } catch (error) {
-        console.error("Error creating WebGL renderer:", error);
-        setWebGLSupported(false);
-        return;
-      }
-      
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      
-      // Create particles for background
-      const particlesGeometry = new THREE.BufferGeometry();
-      const particlesCount = 500;
-      
-      const positionArray = new Float32Array(particlesCount * 3);
-      const colorArray = new Float32Array(particlesCount * 3);
-      
-      for (let i = 0; i < particlesCount * 3; i++) {
-        // Position
-        positionArray[i] = (Math.random() - 0.5) * 10;
-        
-        // Color
-        if (i % 3 === 0) {
-          // Red component (for primary color)
-          colorArray[i] = 0.5 + Math.random() * 0.2;
-        } else if (i % 3 === 1) {
-          // Green component (for secondary color)
-          colorArray[i] = 0.2 + Math.random() * 0.2;
-        } else {
-          // Blue component (for accent color)
-          colorArray[i] = 0.7 + Math.random() * 0.3;
-        }
-      }
-      
-      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
-      particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-      
-      // Material for particles
-      const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.02,
-        sizeAttenuation: true,
-        vertexColors: true,
-        transparent: true,
-        alphaTest: 0.001,
-        opacity: 0.8
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvasRef.current,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'default',
       });
-      
-      // Create points
-      const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-      scene.add(particles);
-      
-      // Position camera
-      camera.position.z = 3;
-      
-      // Handle window resize
-      const handleResize = () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      };
-      
-      window.addEventListener('resize', handleResize);
-      
-      // Animation loop
-      const clock = new THREE.Clock();
-      
-      const animate = () => {
-        const elapsedTime = clock.getElapsedTime();
-        
-        // Rotate particles
-        particles.rotation.y = elapsedTime * 0.05;
-        particles.rotation.x = elapsedTime * 0.03;
-        
-        // Render
-        renderer.render(scene, camera);
-        
-        // Call animate again on the next frame
-        window.requestAnimationFrame(animate);
-      };
-      
-      animate();
-      
-      // Cleanup
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        scene.remove(particles);
-        particlesGeometry.dispose();
-        particlesMaterial.dispose();
-        renderer.dispose();
-      };
     } catch (error) {
-      console.error("Error in Three.js setup:", error);
+      console.error("WebGL renderer creation failed:", error);
       setWebGLSupported(false);
+      return;
     }
+    
+    // Configure renderer
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    // Create optimized particles
+    const particlesCount = 300; // Reduced particle count
+    const particlesGeometry = new THREE.BufferGeometry();
+    const positionArray = new Float32Array(particlesCount * 3);
+    const colorArray = new Float32Array(particlesCount * 3);
+    
+    // More efficient particle generation
+    for (let i = 0; i < particlesCount * 3; i += 3) {
+      // Position (xyz coordinates)
+      positionArray[i] = (Math.random() - 0.5) * 10;     // x
+      positionArray[i+1] = (Math.random() - 0.5) * 10;   // y
+      positionArray[i+2] = (Math.random() - 0.5) * 10;   // z
+      
+      // Color (rgb values)
+      colorArray[i] = 0.5 + Math.random() * 0.2;         // r (primary color)
+      colorArray[i+1] = 0.2 + Math.random() * 0.2;       // g (secondary color)
+      colorArray[i+2] = 0.7 + Math.random() * 0.3;       // b (accent color)
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
+    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    
+    // Simplified material
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.03,
+      sizeAttenuation: true,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.7
+    });
+    
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+    camera.position.z = 3;
+    
+    // Efficient resize handler
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Optimized animation loop
+    const clock = new THREE.Clock();
+    
+    const animate = () => {
+      const elapsedTime = clock.getElapsedTime();
+      
+      // Simple rotation animation
+      particles.rotation.y = elapsedTime * 0.05;
+      particles.rotation.x = elapsedTime * 0.03;
+      
+      renderer.render(scene, camera);
+      window.requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    // Proper cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      scene.remove(particles);
+      particlesGeometry.dispose();
+      particlesMaterial.dispose();
+      renderer.dispose();
+    };
   }, []);
 
+  // Simplified skill categories
   const skillCategories = [
     {
-      title: "Programming Languages",
-      icon: "💻",
-      skills: ["Node.js", "TypeScript", "JavaScript", "Python", "GoLang", "Java", "C#"]
+      title: "Frontend",
+      icon: "🖥️",
+      skills: ["ReactJS", "AngularJS", "JavaScript"]
     },
     {
-      title: "Backend Frameworks",
+      title: "Backend",
       icon: "⚙️",
-      skills: ["Express.js", "NestJS", "GraphQL", "REST APIs"]
-    },
-    {
-      title: "Cloud & DevOps",
-      icon: "☁️",
-      skills: [
-        "AWS (EKS, ECS, Lambda, API Gateway, IAM, S3, CloudFormation, CDK)",
-        "Azure (AKS, Functions, App Services, Blob Storage, Event Grid, Service Bus)"
-      ]
-    },
-    {
-      title: "Infrastructure as Code",
-      icon: "🏗️",
-      skills: ["AWS CDK (TypeScript)", "Terraform", "CloudFormation", "ARM Templates"]
-    },
-    {
-      title: "Containerization & Orchestration",
-      icon: "🐳",
-      skills: ["Docker", "Kubernetes", "Podman", "Istio", "Helm"]
-    },
-    {
-      title: "Monitoring & Logging",
-      icon: "📊",
-      skills: ["Prometheus", "Grafana", "CloudWatch", "Azure Monitor", "ELK Stack"]
-    },
-    {
-      title: "CI/CD & Automation",
-      icon: "🔄",
-      skills: ["Jenkins", "GitHub Actions", "GitLab CI/CD", "Bamboo", "ArgoCD", "GitOps", "Azure DevOps Pipelines"]
-    },
-    {
-      title: "Security & Authentication",
-      icon: "🔒",
-      skills: ["HashiCorp Vault", "EJBCA", "Certbot", "ACM", "OAuth2", "JWT"]
+      skills: ["NodeJS", "ExpressJS", "Flask", "Python"]
     },
     {
       title: "Databases",
       icon: "🗃️",
-      skills: ["MySQL", "PostgreSQL", "DynamoDB", "MongoDB", "CosmosDB", "PLSQL"]
+      skills: ["MySQL", "MongoDB", "DynamoDB"]
     },
     {
-      title: "Version Control & Collaboration",
-      icon: "🤝",
-      skills: ["Git", "Bitbucket", "Jira", "Confluence"]
+      title: "DevOps",
+      icon: "🚀",
+      skills: ["Docker", "Kubernetes", "Jenkins", "Bamboo", "Terraform"]
+    },
+    {
+      title: "Cloud",
+      icon: "☁️",
+      skills: ["AWS", "Azure"]
+    },
+    {
+      title: "Tools",
+      icon: "🔧",
+      skills: ["ELK Stack", "Backstage", "Redmine", "SonarQube", "Coverity"]
+    },
+    {
+      title: "Operating Systems",
+      icon: "💻",
+      skills: ["Linux", "Windows", "MacOS"]
     }
   ];
 
-  // Animation variants for Framer Motion
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -208,186 +168,100 @@ const Skills = () => {
       }
     }
   };
-  
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15
-      }
-    }
-  };
-  
-  const tagVariants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20
-      }
-    }
-  };
-  
-  const skillItemVariants = {
-    initial: { 
-      x: 0, 
-      opacity: 1 
-    },
-    animate: { 
-      x: 0, 
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 10
-      }
-    },
-    hover: { 
-      x: 5, 
-      opacity: 1,
-      color: "var(--color-accent)",
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 10
-      } 
-    }
-  };
 
-  // Create a fallback background style for when WebGL is not supported
-  const fallbackBackgroundStyle = {
-    background: 'linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05) 0%, rgba(var(--color-secondary-rgb), 0.05) 100%)'
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6 }
+    }
   };
 
   return (
-    <section id="skills" className="section relative overflow-hidden py-24" style={!webGLSupported ? fallbackBackgroundStyle : {}}>
-      {/* Three.js Canvas Background - Only render if WebGL is supported */}
-      {webGLSupported && (
-        <canvas 
-          ref={canvasRef} 
-          className="absolute inset-0 w-full h-full -z-10"
+    <section id="skills" className="relative overflow-hidden py-24">
+      {/* WebGL background canvas with conditional rendering */}
+      {webGLSupported ? (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 -z-10 transition-opacity duration-1000"
         />
+      ) : (
+        <div className="absolute inset-0 -z-10 bg-background overflow-hidden">
+          <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-primary/20 filter blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-72 h-72 rounded-full bg-secondary/20 filter blur-3xl"></div>
+        </div>
       )}
       
-      {/* Fallback background for non-WebGL browsers */}
-      {!webGLSupported && (
-        <div className="absolute inset-0 w-full h-full -z-10 bg-gradient-to-br from-primary/5 to-secondary/5" />
-      )}
-      
-      <div className="container-custom relative z-10">
+      <div className="container-custom relative">
         <motion.div 
-          className="mb-16 text-center"
+          className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
         >
-          <motion.span 
-            className="inline-block px-4 py-1.5 mb-4 bg-primary/10 rounded-full text-primary text-sm font-semibold backdrop-blur-sm"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            My Expertise
-          </motion.span>
           <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
             Technical Skills
           </h2>
           <p className="text-xl text-gray-dark max-w-3xl mx-auto">
-            Diverse technical expertise spanning programming languages, frameworks, cloud platforms, and tools
+            Knowledge and expertise in various technologies and tools
           </p>
         </motion.div>
-
+        
+        {/* Skills grid with optimized rendering */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-50px" }}
         >
           {skillCategories.map((category, index) => (
-            <motion.div 
-              key={index} 
+            <motion.div
+              key={index}
               variants={itemVariants}
-              className={`card card-animated backdrop-blur-lg bg-opacity-40 hover:bg-opacity-70 border border-gray/20 hover:border-primary/40 transition-all duration-500 overflow-hidden ${activeCategory === index ? 'border-primary/60 bg-opacity-60 transform -translate-y-1' : ''}`}
+              className="glass-effect card-hover card-shimmer p-6 group"
               onMouseEnter={() => setActiveCategory(index)}
               onMouseLeave={() => setActiveCategory(null)}
             >
-              <div className="flex items-start gap-4">
-                <div className="text-3xl transition-all duration-300">
-                  <motion.div
-                    initial={{ rotate: 0 }}
-                    animate={{ rotate: activeCategory === index ? 360 : 0 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <motion.span 
+                    className="text-3xl bg-white/10 dark:bg-gray-light/10 p-2 rounded-lg shadow-inner" 
+                    role="img" 
+                    aria-label={category.title}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
                     {category.icon}
-                  </motion.div>
+                  </motion.span>
+                  <h3 className="text-xl font-bold text-gradient">{category.title}</h3>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                    {category.title}
-                  </h3>
-                  <ul className="space-y-3">
-                    {category.skills.map((skill, idx) => (
-                      <motion.li 
-                        key={idx} 
-                        initial="initial"
-                        animate={activeCategory === index ? "hover" : "initial"}
-                        variants={skillItemVariants}
-                        className="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-secondary transition-all duration-300"
-                        style={{
-                          paddingLeft: activeCategory === index ? '8px' : '20px',
-                          transform: activeCategory === index ? 'translateX(5px)' : 'translateX(0px)'
-                        }}
-                      >
-                        {skill}
-                        {activeCategory === index && (
-                          <motion.div
-                            className="absolute left-0 top-2.5 h-1.5 w-1.5 rounded-full bg-accent"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ duration: 0.3 }}
-                          />
-                        )}
-                      </motion.li>
-                    ))}
-                  </ul>
+                
+                <div className="space-y-3">
+                  {category.skills.map((skill, idx) => (
+                    <motion.div 
+                      key={idx} 
+                      className="flex items-center gap-2"
+                      initial={{ opacity: 0.6 }}
+                      whileHover={{ opacity: 1, x: 2 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary/70 group-hover:bg-primary"></div>
+                      <span className="text-foreground/90">{skill}</span>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full transform -translate-y-1/2 translate-x-1/2 opacity-70 blur-lg"></div>
+              
+              {/* Enhanced background gradient animation */}
+              <div 
+                className={`absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-transparent 
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-xl`}
+              ></div>
             </motion.div>
           ))}
-        </motion.div>
-        
-        <motion.div 
-          className="flex justify-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          <motion.div 
-            className="inline-flex flex-wrap justify-center gap-3 p-4 rounded-xl bg-background/30 backdrop-blur-lg border border-gray/20"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm hover:bg-primary/20 transition-colors cursor-pointer">Node.js</motion.div>
-            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm hover:bg-secondary/20 transition-colors cursor-pointer">TypeScript</motion.div>
-            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm hover:bg-accent/20 transition-colors cursor-pointer">AWS</motion.div>
-            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm hover:bg-primary/20 transition-colors cursor-pointer">Docker</motion.div>
-            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm hover:bg-secondary/20 transition-colors cursor-pointer">Kubernetes</motion.div>
-            <motion.div variants={tagVariants} className="px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm hover:bg-accent/20 transition-colors cursor-pointer">CI/CD</motion.div>
-          </motion.div>
         </motion.div>
       </div>
     </section>

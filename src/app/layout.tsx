@@ -1,27 +1,32 @@
 import type { Metadata } from "next";
-import { Inter, Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Montserrat, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-poppins",
 });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-montserrat",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sourceCodePro = Source_Code_Pro({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-source-code",
 });
 
 export const metadata: Metadata = {
-  title: "Libin Mathew | Developer Resume",
+  title: "Manuel Robert | Developer Resume",
   description: "Senior Software Engineer & DevOps Expert specialized in Node.js, TypeScript, and cloud infrastructure",
-  keywords: "Libin Mathew, Resume, Node.js, TypeScript, AWS CDK, DevOps, Cloud, Infrastructure",
+  keywords: "Manuel Robert, Resume, Node.js, TypeScript, AWS CDK, DevOps, Cloud, Infrastructure",
 };
 
 export default function RootLayout({
@@ -32,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${montserrat.variable} ${sourceCodePro.variable} antialiased`}
       >
         {children}
       </body>

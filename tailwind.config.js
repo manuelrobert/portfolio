@@ -10,21 +10,37 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: "var(--primary)",
-        "primary-dark": "var(--primary-dark)",
-        secondary: "var(--secondary)",
-        "secondary-dark": "var(--secondary-dark)",
+        primary: {
+          DEFAULT: "var(--primary)",
+          dark: "var(--primary-dark)",
+        },
+        secondary: {
+          DEFAULT: "var(--secondary)",
+          dark: "var(--secondary-dark)",
+        },
         accent: "var(--accent)",
-        "gray-light": "var(--gray-light)",
-        gray: "var(--gray)",
-        "gray-dark": "var(--gray-dark)",
+        gray: {
+          light: "var(--gray-light)",
+          DEFAULT: "var(--gray)",
+          dark: "var(--gray-dark)",
+        },
         success: "var(--success)",
         warning: "var(--warning)",
         danger: "var(--danger)",
       },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        mono: ["var(--font-mono)"],
+        heading: "var(--font-heading)",
+        sans: "var(--font-sans)",
+        mono: "var(--font-mono)",
+      },
+      boxShadow: {
+        card: "var(--card-shadow)",
+        "card-hover": "var(--card-shadow-hover)",
       },
       animation: {
         "fade-in": "fadeIn 0.8s ease-out forwards",

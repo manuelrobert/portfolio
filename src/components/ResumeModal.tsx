@@ -10,7 +10,7 @@ interface ResumeModalProps {
 const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
   const [animationClass, setAnimationClass] = useState('opacity-0 scale-95');
   const [copySuccess, setCopySuccess] = useState(false);
-  const emailAddress = 'libinmathewancheril@gmail.com';
+  const emailAddress = 'manuelrobertk@gmail.com';
   
   useEffect(() => {
     if (isOpen) {

@@ -26,9 +26,9 @@ const Header = () => {
         <div className="flex items-center gap-3 relative z-10">
           <div className={`text-2xl font-bold transition-all duration-300 ${
             isScrolled ? 'text-gradient-pink' : 'text-gradient'
-          }`}>LM</div>
+          }`}>MR</div>
           <div className="h-6 w-px bg-gray mx-2"></div>
-          <span className="text-gray-dark font-medium">DevOps Engineer</span>
+          <span className="text-gray-dark font-medium">Senior Software Engineer</span>
         </div>
         
         {/* Mobile Menu Button */}
