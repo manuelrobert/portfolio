@@ -47,13 +47,6 @@ const nextConfig: NextConfig = {
       }
     ];
   },
-  // Increase the bodyParser size limit for the API route
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-    responseLimit: '10mb',
-  },
   // Add CORS and rewrites for specific embedded content
   async rewrites() {
     return [
@@ -67,6 +60,35 @@ const nextConfig: NextConfig = {
       }
     ];
   },
+  // Configure Turbopack to align with webpack configuration
+  experimental: {
+    turbo: {
+      rules: {
+        // Add the same shader support as in webpack config
+        '*.glsl': ['raw-loader'],
+        '*.vs': ['raw-loader'],
+        '*.fs': ['raw-loader'],
+        '*.vert': ['raw-loader'],
+        '*.frag': ['raw-loader'],
+      },
+    },
+    // Configure server actions body size limit (Next.js 13+)
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
 };
 
 export default nextConfig;
+
+// Note: For API routes in the pages directory, you need to configure the size limit
+// in each API route file individually using:
+//
+// export const config = {
+//   api: {
+//     bodyParser: {
+//       sizeLimit: '10mb',
+//     },
+//     responseLimit: '10mb',
+//   },
+// };
