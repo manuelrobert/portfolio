@@ -73,12 +73,13 @@ const Education = () => {
   // Reusable enhanced card component
   const Card = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
     <motion.div 
-      className={`glass-effect card-hover card-shimmer p-6 ${className}`}
+      className={`bg-white/5 dark:bg-gray-light/5 p-6 rounded-xl border border-white/10 dark:border-white/5 backdrop-blur-[2px] shadow-md ${className}`}
       whileHover={{ 
         y: -5, 
-        boxShadow: '0 20px 30px -10px rgba(0, 0, 0, 0.15)'
+        boxShadow: '0 15px 30px -10px rgba(0, 0, 0, 0.15)',
+        backgroundColor: 'rgba(var(--primary-rgb), 0.03)'
       }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.3 }}
     >
       {children}
     </motion.div>
@@ -87,11 +88,45 @@ const Education = () => {
   return (
     <section id="education" className="section bg-background relative">
       {/* Enhanced background decoration */}
-      <div className="absolute inset-0 overflow-hidden -z-10">
-        <div className="absolute top-0 w-full h-1/3 bg-gradient-to-b from-gray-light/50 to-transparent opacity-70"></div>
-        <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-gray-light/50 to-transparent opacity-70"></div>
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-primary/10 filter blur-3xl"></div>
-        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full bg-secondary/10 filter blur-3xl"></div>
+      <div className="absolute inset-0 overflow-hidden opacity-5 pointer-events-none">
+        <motion.div 
+          className="absolute -top-96 -right-96 w-[600px] h-[600px] rounded-full bg-primary/20 blur-3xl"
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.15, 0.25, 0.15]
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div 
+          className="absolute -bottom-96 -left-96 w-[600px] h-[600px] rounded-full bg-secondary/20 blur-3xl"
+          animate={{ 
+            scale: [1, 1.15, 1],
+            opacity: [0.15, 0.2, 0.15]
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        {/* Additional decorative elements */}
+        <motion.div 
+          className="absolute top-1/4 right-1/4 w-48 h-48 rounded-full border border-primary/10 opacity-30"
+          animate={{ 
+            rotate: [0, 360],
+            scale: [0.8, 1, 0.8]
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
       </div>
       
       <div className="container-custom">
@@ -102,33 +137,32 @@ const Education = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            Education & Skills
-          </h2>
-          <p className="text-xl text-gray-dark max-w-3xl mx-auto">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary font-bold">
+              Education & Skills
+            </h2>
+          </motion.div>
+          <motion.p 
+            className="text-xl text-gray-dark max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            viewport={{ once: true }}
+          >
             Academic background and technical expertise
-          </p>
+          </motion.p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Education Section */}
           <div className="relative">
-            {/* Enhanced blur element */}
-            <motion.div 
-              className="absolute top-0 left-0 w-20 h-20 -translate-x-1/4 -translate-y-1/4 rounded-full bg-primary/20 filter blur-xl"
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0.8, 0.5]
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            
             <motion.h3 
-              className="heading-md mb-8 text-primary"
+              className="heading-md mb-8 text-primary/90 font-semibold"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
@@ -146,11 +180,12 @@ const Education = () => {
             >
               {/* Enhanced timeline line with animation */}
               <motion.div 
-                className="absolute top-2 bottom-0 left-8 w-0.5 bg-gradient-to-b from-primary to-transparent"
+                className="absolute top-2 bottom-0 left-8 w-0.5 bg-gradient-to-b from-primary/60 via-secondary/60 to-primary/20"
                 initial={{ height: 0 }}
                 whileInView={{ height: '100%' }}
                 transition={{ duration: 1, ease: "easeOut" }}
                 viewport={{ once: true }}
+                style={{ boxShadow: '0 0 8px rgba(var(--primary-rgb), 0.1)' }}
               />
               
               {educationData.map((edu, index) => (
@@ -161,17 +196,18 @@ const Education = () => {
                 >
                   {/* Enhanced timeline dot */}
                   <motion.div 
-                    className="absolute left-0 top-2 w-16 h-16 rounded-full bg-gray-light flex items-center justify-center 
-                      border-4 border-background shadow-lg z-10"
+                    className="absolute left-0 top-2 w-16 h-16 rounded-full bg-white/5 dark:bg-gray-light/5 flex items-center justify-center 
+                      border border-white/20 shadow-md z-10 backdrop-blur-[1px]"
                     whileHover={{ 
-                      scale: 1.1, 
-                      borderColor: 'rgba(var(--primary-rgb), 0.3)'
+                      scale: 1.05, 
+                      borderColor: 'rgba(var(--primary-rgb), 0.2)',
+                      boxShadow: '0 5px 15px -5px rgba(var(--primary-rgb), 0.15)'
                     }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   >
                     <motion.div 
-                      className="text-primary font-bold"
-                      whileHover={{ scale: 1.1 }}
+                      className="text-primary/80 font-medium"
+                      whileHover={{ scale: 1.05 }}
                     >
                       {edu.period.split('–')[0]}
                     </motion.div>
@@ -179,13 +215,14 @@ const Education = () => {
                   
                   <Card>
                     <motion.h4 
-                      className="text-xl font-bold mb-2 text-gradient"
+                      className="text-xl font-bold mb-2 text-gradient inline-block"
                       whileHover={{ x: 2 }}
+                      transition={{ duration: 0.2 }}
                     >
                       {edu.degree}
                     </motion.h4>
-                    <p className="text-gray-dark mb-2">{edu.institution}</p>
-                    <p className="text-sm text-foreground/70">{edu.period}</p>
+                    <p className="text-primary font-semibold mb-2">{edu.institution}</p>
+                    <p className="text-sm text-gray-dark mt-1">{edu.period}</p>
                   </Card>
                 </motion.div>
               ))}
@@ -194,22 +231,8 @@ const Education = () => {
 
           {/* Skills Section */}
           <div className="relative">
-            {/* Enhanced blur element */}
-            <motion.div 
-              className="absolute top-0 right-0 w-20 h-20 translate-x-1/4 -translate-y-1/4 rounded-full bg-secondary/20 filter blur-xl"
-              animate={{ 
-                scale: [1, 1.1, 1],
-                opacity: [0.5, 0.7, 0.5]
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            
             <motion.h3 
-              className="heading-md mb-8 text-primary"
+              className="heading-md mb-8 text-primary/90 font-semibold"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
@@ -232,8 +255,9 @@ const Education = () => {
                 >
                   <Card>
                     <motion.h4 
-                      className="text-lg font-semibold mb-3 text-gradient"
+                      className="text-lg font-semibold mb-3 text-gradient inline-block"
                       whileHover={{ x: 2 }}
+                      transition={{ duration: 0.2 }}
                     >
                       {group.title}
                     </motion.h4>
@@ -241,12 +265,13 @@ const Education = () => {
                       {group.skills.map((skill, idx) => (
                         <motion.span 
                           key={idx} 
-                          className="badge"
+                          className="bg-white/10 dark:bg-gray/5 px-3 py-1 rounded-full text-sm text-gray-dark border border-white/10 dark:border-white/5"
                           whileHover={{ 
                             y: -2, 
-                            backgroundColor: 'rgba(var(--primary-rgb), 0.1)',
-                            borderColor: 'rgba(var(--primary-rgb), 0.3)'
+                            backgroundColor: 'rgba(var(--primary-rgb), 0.08)',
+                            borderColor: 'rgba(var(--primary-rgb), 0.15)'
                           }}
+                          transition={{ duration: 0.2 }}
                         >
                           {skill}
                         </motion.span>

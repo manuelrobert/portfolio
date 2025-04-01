@@ -71,89 +71,15 @@ const Experience = () => {
     }
   };
 
-  // Reusable experience card component with enhanced styling
-  const ExperienceCard = ({ experience, isEven }: { experience: typeof experiences[0], isEven: boolean }) => (
-    <motion.div 
-      variants={itemVariants}
-      className={`mb-16 relative group`}
-    >
-      <div className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8`}>
-        {/* Enhanced timeline dot with animation */}
-        <motion.div 
-          className="absolute left-0 md:left-1/2 top-0 w-5 h-5 rounded-full bg-primary border-4 border-background shadow-lg transform -translate-x-2.5 md:-translate-x-1/2 z-10"
-          whileHover={{ scale: 1.8, backgroundColor: 'var(--secondary)' }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 400, 
-            damping: 10 
-          }}
-        />
-        
-        {/* Enhanced date tag with animation */}
-        <div className={`hidden md:block absolute top-0 ${isEven ? 'right-1/2 mr-12' : 'left-1/2 ml-12'}`}>
-          <motion.div 
-            className="bg-gray-light py-1 px-4 rounded-full text-gray-dark text-sm font-medium shadow-sm
-              border border-white/20 dark:border-gray/20 backdrop-blur-sm"
-            whileHover={{ y: -2, scale: 1.05, backgroundColor: 'rgba(var(--primary-rgb), 0.05)' }}
-          >
-            {experience.period}
-          </motion.div>
-        </div>
-        
-        <div className={`md:w-1/2 ${isEven ? 'md:pr-16 md:text-right' : 'md:pl-16'} pl-10 md:pl-0`}>
-          <motion.h3 
-            className="text-2xl font-bold mb-1 text-gradient"
-            whileHover={{ x: isEven ? -3 : 3 }}
-          >
-            {experience.title}
-          </motion.h3>
-          <motion.div 
-            className="text-primary font-semibold mb-4"
-            whileHover={{ x: isEven ? -2 : 2 }}
-          >
-            {experience.company}
-          </motion.div>
-          <div className="md:hidden text-gray-dark text-sm mb-4">{experience.period}</div>
-          
-          <motion.div 
-            className="glass-effect card-hover card-shimmer p-6"
-            whileHover={{ 
-              y: -6,
-              boxShadow: '0 25px 35px -12px rgba(0, 0, 0, 0.18)'
-            }}
-            transition={{ duration: 0.4 }}
-          >
-            <ul className="space-y-4 list-disc pl-5">
-              {experience.responsibilities.map((resp, idx) => (
-                <motion.li 
-                  key={idx} 
-                  className="pl-1"
-                  initial={{ opacity: 0.8 }}
-                  whileHover={{ opacity: 1, x: isEven ? -2 : 2 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {resp}
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
-        </div>
-        
-        {/* Empty div to maintain the layout */}
-        <div className="md:w-1/2"></div>
-      </div>
-    </motion.div>
-  );
-
   return (
-    <section id="experience" className="section bg-background relative">
-      {/* Enhanced background elements */}
-      <div className="absolute inset-0 overflow-hidden opacity-10">
+    <section id="experience" className="section bg-background relative overflow-hidden py-20">
+      {/* Beautiful background gradient elements */}
+      <div className="absolute inset-0 overflow-hidden opacity-5 pointer-events-none">
         <motion.div 
-          className="absolute -top-96 -right-96 w-[800px] h-[800px] rounded-full bg-primary/30 blur-3xl"
+          className="absolute -top-96 -right-96 w-[800px] h-[800px] rounded-full bg-primary/20 blur-3xl"
           animate={{ 
             scale: [1, 1.1, 1],
-            opacity: [0.2, 0.4, 0.2]
+            opacity: [0.15, 0.25, 0.15]
           }}
           transition={{
             duration: 15,
@@ -162,10 +88,10 @@ const Experience = () => {
           }}
         />
         <motion.div 
-          className="absolute -bottom-96 -left-96 w-[800px] h-[800px] rounded-full bg-secondary/30 blur-3xl"
+          className="absolute -bottom-96 -left-96 w-[800px] h-[800px] rounded-full bg-secondary/20 blur-3xl"
           animate={{ 
             scale: [1, 1.15, 1],
-            opacity: [0.2, 0.3, 0.2]
+            opacity: [0.15, 0.2, 0.15]
           }}
           transition={{
             duration: 20,
@@ -173,48 +99,299 @@ const Experience = () => {
             ease: "easeInOut"
           }}
         />
+        
+        {/* Additional decorative elements */}
+        <motion.div 
+          className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full border border-primary/10 opacity-30"
+          animate={{ 
+            rotate: [0, 360],
+            scale: [0.8, 1, 0.8]
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        <motion.div 
+          className="absolute bottom-1/4 right-1/4 w-48 h-48 rounded-full border border-secondary/10 opacity-20"
+          animate={{ 
+            rotate: [360, 0],
+            scale: [1, 0.9, 1]
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
       </div>
       
       <div className="container-custom relative">
+        {/* Section header with enhanced animation */}
         <motion.div 
-          className="mb-16 text-center max-w-3xl mx-auto"
+          className="mb-20 text-center max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-50px" }}
         >
-          <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            Professional Experience
-          </h2>
-          <p className="text-xl text-gray-dark">
-            Over 3 years of experience developing full-stack applications and implementing DevOps solutions
-          </p>
-        </motion.div>
-
-        <div className="max-w-4xl mx-auto relative">
-          {/* Enhanced timeline line with animation */}
-          <motion.div 
-            className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-primary/30 transform md:-translate-x-1/2"
-            initial={{ height: 0 }}
-            whileInView={{ height: '100%' }}
-            transition={{ duration: 1.8, ease: "easeOut" }}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
             viewport={{ once: true }}
+          >
+            <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary font-bold">
+              Professional Experience
+            </h2>
+          </motion.div>
+          <motion.p 
+            className="text-xl text-gray-dark max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            Over 3 years of experience developing full-stack applications and implementing DevOps solutions
+          </motion.p>
+        </motion.div>
+        
+        {/* Timeline container */}
+        <div className="max-w-5xl mx-auto relative">
+          {/* Center timeline line */}
+          <motion.div 
+            className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-secondary/60 to-primary/20 transform -translate-x-1/2 rounded-full z-10"
+            initial={{ height: 0, opacity: 0 }}
+            whileInView={{ height: '100%', opacity: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            viewport={{ once: true }}
+            style={{ boxShadow: '0 0 10px rgba(var(--primary-rgb), 0.15)' }}
           />
           
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {experiences.map((experience, index) => (
-              <ExperienceCard 
-                key={index} 
-                experience={experience} 
-                isEven={index % 2 === 0} 
-              />
-            ))}
-          </motion.div>
+          {/* Mobile timeline line */}
+          <motion.div 
+            className="md:hidden absolute left-[15px] top-0 bottom-0 w-1 bg-gradient-to-b from-primary/60 via-secondary/60 to-primary/20 rounded-full z-10"
+            initial={{ height: 0, opacity: 0 }}
+            whileInView={{ height: '100%', opacity: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            viewport={{ once: true }}
+            style={{ boxShadow: '0 0 8px rgba(var(--primary-rgb), 0.15)' }}
+          />
+          
+          {/* Experience items */}
+          <div className="relative">
+            {experiences.map((experience, index) => {
+              const isEven = index % 2 === 0;
+              
+              return (
+                <div key={index} className="mb-24 last:mb-8 relative">
+                  {/* Timeline dot for desktop */}
+                  <motion.div 
+                    className="hidden md:flex absolute left-1/2 top-7 w-5 h-5 -ml-2.5 rounded-full bg-gradient-to-tr from-primary/80 via-secondary/80 to-primary/80 border border-white/20 shadow-md z-20 items-center justify-center"
+                    initial={{ scale: 0.8, opacity: 0.5 }}
+                    whileInView={{ 
+                      scale: 1, 
+                      opacity: 1,
+                      boxShadow: '0 0 0 4px rgba(var(--primary-rgb), 0.08), 0 0 0 7px rgba(var(--primary-rgb), 0.03)'
+                    }}
+                    whileHover={{ 
+                      scale: 1.4, 
+                      boxShadow: '0 0 10px 2px rgba(var(--primary-rgb), 0.25), 0 0 0 6px rgba(var(--primary-rgb), 0.05)' 
+                    }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 300, 
+                      damping: 15 
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/90 animate-pulse"></div>
+                  </motion.div>
+                  
+                  {/* Timeline dot for mobile */}
+                  <motion.div 
+                    className="md:hidden absolute left-[15px] top-7 w-5 h-5 -ml-2.5 rounded-full bg-gradient-to-tr from-primary/80 via-secondary/80 to-primary/80 border border-white/20 shadow-md z-20 flex items-center justify-center"
+                    initial={{ scale: 0.8, opacity: 0.5 }}
+                    whileInView={{ 
+                      scale: 1, 
+                      opacity: 1,
+                      boxShadow: '0 0 0 4px rgba(var(--primary-rgb), 0.08)'
+                    }}
+                    whileHover={{ scale: 1.4 }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 300, 
+                      damping: 15 
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/90 animate-pulse"></div>
+                  </motion.div>
+
+                  {/* Mobile view (always shown on mobile) */}
+                  <div className="md:hidden pl-12">
+                    <div className="mb-3">
+                      <h3 className="text-2xl font-bold mb-1 text-gradient">
+                        {experience.title}
+                      </h3>
+                      <div className="text-primary font-semibold">
+                        {experience.company}
+                      </div>
+                      <div className="text-gray-dark text-sm mt-1">
+                        {experience.period}
+                      </div>
+                    </div>
+                    
+                    <motion.div 
+                      className="bg-white/5 dark:bg-gray-light/5 card-hover p-6 rounded-xl border border-white/10 dark:border-white/5 backdrop-blur-[2px] shadow-md"
+                      whileHover={{ 
+                        y: -5,
+                        boxShadow: '0 15px 30px -10px rgba(0, 0, 0, 0.15)',
+                        backgroundColor: 'rgba(var(--primary-rgb), 0.03)'
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ul className="space-y-3 list-disc pl-5">
+                        {experience.responsibilities.map((resp, idx) => (
+                          <motion.li 
+                            key={idx} 
+                            className="pl-1 text-gray-dark" 
+                            initial={{ opacity: 0.9 }}
+                            whileHover={{ opacity: 1, x: 2 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {resp}
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  </div>
+
+                  {/* Desktop view with alternating layout */}
+                  <div className="hidden md:flex w-full">
+                    {/* Left side (even index) */}
+                    <div className={`w-1/2 pr-16 text-right ${!isEven && 'invisible'}`}>
+                      {isEven && (
+                        <motion.div
+                          initial={{ opacity: 0, x: -30 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.6, delay: 0.1 }}
+                          viewport={{ once: true }}
+                        >
+                          <div className="mb-4">
+                            <motion.h3 
+                              className="text-2xl font-bold mb-1.5 text-gradient inline-block"
+                              whileHover={{ x: -3 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              {experience.title}
+                            </motion.h3>
+                            <motion.div 
+                              className="text-primary font-semibold text-lg"
+                              whileHover={{ x: -2 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              {experience.company}
+                            </motion.div>
+                            <div className="text-gray-dark text-sm mt-1.5 font-medium inline-block bg-white/10 dark:bg-gray/5 px-3 py-0.5 rounded-full backdrop-blur-sm">
+                              {experience.period}
+                            </div>
+                          </div>
+                          
+                          <motion.div 
+                            className="bg-white/5 dark:bg-gray-light/5 card-hover p-7 rounded-2xl border border-white/10 dark:border-white/5 backdrop-blur-[2px] relative overflow-hidden shadow-lg"
+                            whileHover={{ 
+                              y: -8,
+                              boxShadow: '0 20px 40px -15px rgba(var(--primary-rgb), 0.15)',
+                              backgroundColor: 'rgba(var(--primary-rgb), 0.03)'
+                            }}
+                            transition={{ duration: 0.4 }}
+                          >
+                            {/* Subtle decorative element */}
+                            <div className="absolute top-0 right-0 w-1/2 h-0.5 bg-gradient-to-l from-primary/10 to-transparent"></div>
+                            
+                            <ul className="space-y-4 list-disc marker:text-primary/60 pl-6">
+                              {experience.responsibilities.map((resp, idx) => (
+                                <motion.li 
+                                  key={idx} 
+                                  className="pl-1 text-gray-dark"
+                                  initial={{ opacity: 0.9 }}
+                                  whileHover={{ opacity: 1, x: -2 }}
+                                  transition={{ duration: 0.2 }}
+                                >
+                                  {resp}
+                                </motion.li>
+                              ))}
+                            </ul>
+                          </motion.div>
+                        </motion.div>
+                      )}
+                    </div>
+                    
+                    {/* Right side (odd index) */}
+                    <div className={`w-1/2 pl-16 ${isEven && 'invisible'}`}>
+                      {!isEven && (
+                        <motion.div
+                          initial={{ opacity: 0, x: 30 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.6, delay: 0.1 }}
+                          viewport={{ once: true }}
+                        >
+                          <div className="mb-4">
+                            <motion.h3 
+                              className="text-2xl font-bold mb-1.5 text-gradient inline-block"
+                              whileHover={{ x: 3 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              {experience.title}
+                            </motion.h3>
+                            <motion.div 
+                              className="text-primary font-semibold text-lg"
+                              whileHover={{ x: 2 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              {experience.company}
+                            </motion.div>
+                            <div className="text-gray-dark text-sm mt-1.5 font-medium inline-block bg-white/10 dark:bg-gray/5 px-3 py-0.5 rounded-full backdrop-blur-sm">
+                              {experience.period}
+                            </div>
+                          </div>
+                          
+                          <motion.div 
+                            className="bg-white/5 dark:bg-gray-light/5 card-hover p-7 rounded-2xl border border-white/10 dark:border-white/5 backdrop-blur-[2px] relative overflow-hidden shadow-lg"
+                            whileHover={{ 
+                              y: -8,
+                              boxShadow: '0 20px 40px -15px rgba(var(--primary-rgb), 0.15)',
+                              backgroundColor: 'rgba(var(--primary-rgb), 0.03)'
+                            }}
+                            transition={{ duration: 0.4 }}
+                          >
+                            {/* Subtle decorative element */}
+                            <div className="absolute top-0 left-0 w-1/2 h-0.5 bg-gradient-to-r from-primary/10 to-transparent"></div>
+                            
+                            <ul className="space-y-4 list-disc marker:text-primary/60 pl-6">
+                              {experience.responsibilities.map((resp, idx) => (
+                                <motion.li 
+                                  key={idx} 
+                                  className="pl-1 text-gray-dark"
+                                  initial={{ opacity: 0.9 }}
+                                  whileHover={{ opacity: 1, x: 2 }}
+                                  transition={{ duration: 0.2 }}
+                                >
+                                  {resp}
+                                </motion.li>
+                              ))}
+                            </ul>
+                          </motion.div>
+                        </motion.div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

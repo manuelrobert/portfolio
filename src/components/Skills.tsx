@@ -179,64 +179,115 @@ const Skills = () => {
   };
 
   return (
-    <section id="skills" className="relative overflow-hidden py-24">
+    <section id="skills" className="section bg-background relative">
       {/* WebGL background canvas with conditional rendering */}
       {webGLSupported ? (
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 -z-10 transition-opacity duration-1000"
+          className="absolute inset-0 -z-10 opacity-40 transition-opacity duration-1000"
         />
       ) : (
-        <div className="absolute inset-0 -z-10 bg-background overflow-hidden">
-          <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-primary/20 filter blur-3xl"></div>
-          <div className="absolute bottom-10 left-10 w-72 h-72 rounded-full bg-secondary/20 filter blur-3xl"></div>
+        <div className="absolute inset-0 overflow-hidden opacity-5 pointer-events-none">
+          <motion.div 
+            className="absolute -top-96 -right-96 w-[600px] h-[600px] rounded-full bg-primary/20 blur-3xl"
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.15, 0.25, 0.15]
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div 
+            className="absolute -bottom-96 -left-96 w-[600px] h-[600px] rounded-full bg-secondary/20 blur-3xl"
+            animate={{ 
+              scale: [1, 1.15, 1],
+              opacity: [0.15, 0.2, 0.15]
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
         </div>
       )}
       
-      <div className="container-custom relative">
+      <div className="container-custom">
         <motion.div 
-          className="text-center mb-16"
+          className="mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            Technical Skills
-          </h2>
-          <p className="text-xl text-gray-dark max-w-3xl mx-auto">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="heading-lg mb-4 inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary font-bold">
+              Technical Skills
+            </h2>
+          </motion.div>
+          <motion.p 
+            className="text-xl text-gray-dark max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            viewport={{ once: true }}
+          >
             Knowledge and expertise in various technologies and tools
-          </p>
+          </motion.p>
         </motion.div>
         
         {/* Skills grid with optimized rendering */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true }}
         >
           {skillCategories.map((category, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
-              className="glass-effect card-hover card-shimmer p-6 group"
+              className="relative overflow-hidden"
               onMouseEnter={() => setActiveCategory(index)}
               onMouseLeave={() => setActiveCategory(null)}
+              whileHover={{ 
+                y: -8,
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)' 
+              }}
+              transition={{ duration: 0.3 }}
             >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <motion.span 
-                    className="text-3xl bg-white/10 dark:bg-gray-light/10 p-2 rounded-lg shadow-inner" 
-                    role="img" 
-                    aria-label={category.title}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              <motion.div 
+                className="relative z-10 h-full bg-white/5 dark:bg-gray-light/5 border border-white/10 dark:border-white/5 
+                backdrop-blur-[2px] p-6 rounded-xl shadow-md"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <motion.div 
+                    className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 
+                          border border-white/10 flex items-center justify-center shadow-sm" 
+                    whileHover={{ 
+                      rotate: 5,
+                      boxShadow: '0 5px 15px -3px rgba(var(--primary-rgb), 0.15)' 
+                    }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {category.icon}
-                  </motion.span>
-                  <h3 className="text-xl font-bold text-gradient">{category.title}</h3>
+                    <span className="text-xl text-gradient">{category.icon}</span>
+                  </motion.div>
+                  <motion.h3 
+                    className="text-xl font-bold text-gradient inline-block"
+                    whileHover={{ x: 2 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {category.title}
+                  </motion.h3>
                 </div>
                 
                 <div className="space-y-3">
@@ -244,22 +295,23 @@ const Skills = () => {
                     <motion.div 
                       key={idx} 
                       className="flex items-center gap-2"
-                      initial={{ opacity: 0.6 }}
+                      initial={{ opacity: 0.8 }}
                       whileHover={{ opacity: 1, x: 2 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.2 }}
                     >
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary/70 group-hover:bg-primary"></div>
-                      <span className="text-foreground/90">{skill}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
+                      <span className="text-gray-dark">{skill}</span>
                     </motion.div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
               
-              {/* Enhanced background gradient animation */}
-              <div 
-                className={`absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-transparent 
-                  opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-xl`}
-              ></div>
+              {/* Background decoration */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-40"
+                whileHover={{ opacity: 0.7 }}
+                transition={{ duration: 0.3 }}
+              />
             </motion.div>
           ))}
         </motion.div>
